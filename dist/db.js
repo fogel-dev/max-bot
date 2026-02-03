@@ -19,3 +19,14 @@ export function savePhone(userId, phone) {
 export function getAllUsers() {
     return db.prepare('SELECT * FROM users').all();
 }
+export function getUserByPhone(phone) {
+    return db
+        .prepare('SELECT * FROM users WHERE phone = ?')
+        .get(phone);
+}
+export function deleteUserById(userId) {
+    const result = db
+        .prepare('DELETE FROM users WHERE user_id = ?')
+        .run(userId);
+    return result.changes > 0; // true если пользователь был удалён
+}

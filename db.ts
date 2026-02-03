@@ -1,4 +1,5 @@
 import Database from 'better-sqlite3';
+import {User} from "./types";
 
 export const db = new Database('users.db');
 
@@ -20,6 +21,20 @@ export function savePhone(userId: string, phone: string) {
 }
 
 // функция для проверки содержимого
-export function getAllUsers() {
-    return db.prepare('SELECT * FROM users').all();
+export function getAllUsers(): User[] {
+    return db.prepare('SELECT * FROM users').all() as User[];
+}
+
+export function getUserByPhone(phone: string): User {
+    return db
+        .prepare('SELECT * FROM users WHERE phone = ?')
+        .get(phone) as User;
+}
+
+export function deleteUserById(userId: string) {
+    const result = db
+        .prepare('DELETE FROM users WHERE user_id = ?')
+        .run(userId);
+
+    return result.changes > 0; // true если пользователь был удалён
 }
