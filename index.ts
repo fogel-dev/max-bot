@@ -42,7 +42,7 @@ app.post('/events', basicAuth, async (req, res) => {
     const phone = event.phone;
     const data = event.data;
 
-    const message = !data.message ? `Код доступа к документам: ${data.code}` : `F.Doc. Для вас сформирован комплект документов. Чтобы открыть его, нажмите на кнопку ниже.`;
+    const message = data.message ? 'F.Doc. Для вас сформирован комплект документов. Чтобы открыть его, нажмите на кнопку ниже.' : data.code ? `Код доступа к документам: ${data.code}` : ``;
 
     if (!phone) {
         return res.status(400).json({ error: 'phone is required' });
@@ -56,11 +56,11 @@ app.post('/events', basicAuth, async (req, res) => {
     }
 
     try {
-        await bot.api.sendMessageToUser(Number(user.user_id), message, {attachments: [
+        await bot.api.sendMessageToUser(Number(user.user_id), message, {attachments: data.message ? [
                 Keyboard.inlineKeyboard([
-                    data.message ? [Keyboard.button.link('➡️ Перейти к документам', data.message)] : [],
-                ]),
-            ],});
+                    [Keyboard.button.link('➡️ Перейти к документам', data.message)],
+                ])
+            ] : []});
     } catch (e) {
         // @ts-ignore
         if (e.status === 403) {
