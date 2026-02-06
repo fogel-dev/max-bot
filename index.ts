@@ -42,7 +42,7 @@ app.post('/events', basicAuth, async (req, res) => {
     const phone = event.phone;
     const data = event.data;
 
-    const message = data.message ? 'F.Doc. Для вас сформирован комплект документов. Чтобы открыть его, нажмите на кнопку ниже.' : data.code ? `Код доступа к документам: ${data.code}` : ``;
+    const message = data.message ? `F.Doc. Для вас сформирован комплект документов. Чтобы открыть его, перейдите по ссылке или нажмите на кнопку ниже.\n${data.message}` : data.code ? `Код доступа к документам: ${data.code}` : ``;
 
     if (!phone) {
         return res.status(400).json({ error: 'phone is required' });
